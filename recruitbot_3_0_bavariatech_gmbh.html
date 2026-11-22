@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RecruitBot 3.0 | BavariaTech GmbH – Bewerber-Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8FAFC;
+            color: #0F172A;
+        }
+        /* Custom Toggle Switch (Personio Style) */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #2563EB;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #2563EB;
+        }
+        /* Range Slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 22px;
+            width: 22px;
+            border-radius: 50%;
+            background: #2563EB;
+            cursor: pointer;
+            margin-top: -7px;
+            border: 3px solid #FFFFFF;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.4);
+            transition: transform 0.15s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: #E2E8F0;
+            border-radius: 999px;
+        }
+        /* Subtle highlight pill in cover letter */
+        .kw-hit {
+            background-color: #DCFCE7;
+            color: #166534;
+            border-bottom: 2px solid #22C55E;
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .kw-project {
+            background-color: #DBEAFE;
+            color: #1E40AF;
+            border-bottom: 2px solid #3B82F6;
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Top SaaS Navigation Bar -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <!-- Brand & Job Info -->
+            <div class="flex items-center gap-3.5">
+                <div class="w-10 h-10 rounded-xl bg-blue-900 text-white flex items-center justify-center font-bold text-lg shadow-sm shrink-0">
+                    BT
+                </div>
+                <div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="font-bold text-slate-900 text-base sm:text-lg">BavariaTech GmbH</span>
+                        <span class="text-slate-300">|</span>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                            <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                            RecruitBot 3.0
+                        </span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
+                        Stelle: <span class="font-semibold text-slate-700">Auszubildende/r Fachinformatiker/in (m/w/d)</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <nav class="flex items-center bg-slate-100 p-1 rounded-xl self-start md:self-center w-full md:w-auto overflow-x-auto">
+                <button id="tab-btn-inbox" onclick="switchTab('inbox')" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2 bg-white text-blue-700 shadow-sm">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span>Bewerber-Eingang (3)</span>
+                </button>
+                <button id="tab-btn-settings" onclick="switchTab('settings')" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+                    </svg>
+                    <span>Filter-Regeln anpassen</span>
+                </button>
+                <button id="tab-btn-sandbox" onclick="switchTab('sandbox')" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                    <span>Selbst testen: Berufs-Check & KI-Scanner</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
+
+        <!-- Einklappbarer Aufgaben-Banner (Differenzierung in 3 Stufen) -->
+        <div class="mb-5 bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+            <button type="button" onclick="toggleTaskBanner()" class="w-full px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between gap-3 text-left hover:bg-slate-800 transition">
+                <div class="flex items-center gap-2.5">
+                    <span class="px-2.5 py-0.5 rounded-md bg-blue-500 text-white text-xs font-bold uppercase tracking-wide">Arbeitsauftrag</span>
+                    <span class="font-bold text-sm sm:text-base">So arbeitet ihr mit „RecruitBot 3.0“ (3 Stufen)</span>
+                </div>
+                <span id="task-banner-toggle-text" class="text-xs font-semibold text-slate-300 flex items-center gap-1 shrink-0">
+                    <span>Einklappen</span>
+                    <svg id="task-banner-icon" class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+                    </svg>
+                </span>
+            </button>
+            <div id="task-banner-body" class="p-4 sm:p-5 bg-slate-50/70 grid grid-cols-1 md:grid-cols-3 gap-3.5 text-sm">
+                <!-- Stufe 1 -->
+                <div onclick="switchTab('inbox')" class="cursor-pointer p-3.5 rounded-xl bg-white border border-slate-200 hover:border-blue-400 transition shadow-sm">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-800 font-bold text-xs flex items-center justify-center">1</span>
+                        <span class="font-bold text-slate-900">Basis: Bewerber-Check</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Klickt im <strong>Bewerber-Eingang</strong> auf <em>Julian, Denis und Mia</em>. Prüft unten in der Punkte-Rechnung, warum Mia nur <strong>35 %</strong> erhält.
+                    </p>
+                </div>
+                <!-- Stufe 2 -->
+                <div onclick="switchTab('settings')" class="cursor-pointer p-3.5 rounded-xl bg-white border border-slate-200 hover:border-blue-400 transition shadow-sm">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-800 font-bold text-xs flex items-center justify-center">2</span>
+                        <span class="font-bold text-slate-900">Aufbau: Filter-Regeln anpassen</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Wechselt zu <strong>Filter-Regeln anpassen</strong>. Schaltet den <em>Praxis-Bonus</em> ein und reduziert leere <em>Buzzwords</em> – wie ändert sich die Rangliste?
+                    </p>
+                </div>
+                <!-- Stufe 3 -->
+                <div onclick="switchTab('sandbox')" class="cursor-pointer p-3.5 rounded-xl bg-white border border-slate-200 hover:border-blue-400 transition shadow-sm">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center justify-center">3</span>
+                        <span class="font-bold text-slate-900">Experten: Dein Berufs-Check</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Macht unter <strong>Selbst testen</strong> das kurze 3-Fragen-Quiz zu eurer Realschul-Richtung und testet eure Bewerbung für Firmen in Freising/München!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Banner: Zeigt immer den aktuellen Filter-Modus -->
+        <div id="filter-status-bar" class="mb-6 bg-blue-50 border border-blue-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-start sm:items-center gap-3">
+                <div class="p-2 bg-blue-100 text-blue-700 rounded-xl shrink-0 mt-0.5 sm:mt-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div class="text-sm">
+                    <span class="font-semibold text-blue-950">Aktive Software-Vorauswahl:</span>
+                    <span id="status-summary-text" class="text-blue-800">Standard-Einstellung der Firma (Einladung ab 60 % Score).</span>
+                </div>
+            </div>
+            <button onclick="switchTab('settings')" class="text-xs font-semibold text-blue-700 hover:text-blue-900 underline self-end sm:self-center shrink-0">
+                Regeln ändern &rarr;
+            </button>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- TAB 1: BEWERBER-EINGANG (INBOX & DETAILANALYSE)           -->
+        <!-- ========================================================= -->
+        <section id="view-inbox" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Linke Spalte: Bewerber-Liste -->
+            <div class="lg:col-span-5 space-y-3">
+                <div class="flex items-center justify-between px-1">
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">Eingegangene Bewerbungen (Sortiert nach Score)</h2>
+                    <span class="text-xs text-slate-400">Klicken zum Prüfen</span>
+                </div>
+                <div id="candidate-list" class="space-y-3">
+                    <!-- Wird dynamisch per JS gefüllt -->
+                </div>
+            </div>
+
+            <!-- Rechte Spalte: Detail-Akte & Punkte-Rechnung -->
+            <div class="lg:col-span-7">
+                <div id="candidate-detail" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-7">
+                    <!-- Wird dynamisch per JS gefüllt -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- TAB 2: FILTER-REGELN ANPASSEN (ALGORITHMUS-STEUERUNG)     -->
+        <!-- ========================================================= -->
+        <section id="view-settings" class="hidden space-y-6">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+                    <div>
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200">Admin-Konfiguration • RecruitBot 3.0</span>
+                        <h2 class="text-xl font-bold text-slate-900 mt-2">Wie soll die Software Bewerbungen bewerten?</h2>
+                        <p class="text-sm text-slate-600 mt-1">Verändere die Filter-Regeln und beobachte unten live, wie sich die Rangliste von Julian, Denis und Mia verschiebt.</p>
+                    </div>
+                    <button type="button" onclick="resetRules()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition self-start sm:self-center shrink-0">
+                        ↺ Standard-Regeln wiederherstellen
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
+                    <!-- Regel 1: Kernfächer K.o. -->
+                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/70 flex items-start justify-between gap-4">
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-sm">1. Kernfächer-Mindestanforderung (K.-o.-Regel)</h3>
+                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                Bewerber müssen in Mathe, Deutsch und Englisch mindestens die Note 3 haben (keine 4 oder 5).
+                            </p>
+                        </div>
+                        <div class="relative inline-block w-11 mr-1 align-middle select-none shrink-0 mt-1">
+                            <input type="checkbox" id="rule-grades" checked onchange="updateSimulation()" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 border-slate-300 appearance-none cursor-pointer transition-all duration-200"/>
+                            <label for="rule-grades" class="toggle-label block overflow-hidden h-6 rounded-full bg-slate-300 cursor-pointer transition-colors duration-200"></label>
+                        </div>
+                    </div>
+
+                    <!-- Regel 2: Praktikumszeugnis Pflicht -->
+                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/70 flex items-start justify-between gap-4">
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-sm">2. Offizielles Praktikumszeugnis (+50 Pkt.)</h3>
+                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                Vergibt 50 Punkte nur dann, wenn eine offizielle Firmen-Bescheinigung hochgeladen wurde.
+                            </p>
+                        </div>
+                        <div class="relative inline-block w-11 mr-1 align-middle select-none shrink-0 mt-1">
+                            <input type="checkbox" id="rule-certificate" checked onchange="updateSimulation()" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 border-slate-300 appearance-none cursor-pointer transition-all duration-200"/>
+                            <label for="rule-certificate" class="toggle-label block overflow-hidden h-6 rounded-full bg-slate-300 cursor-pointer transition-colors duration-200"></label>
+                        </div>
+                    </div>
+
+                    <!-- Regel 3: Praxis-Bonus (Lösung für Mia!) -->
+                    <div class="p-4 rounded-xl border-2 border-blue-200 bg-blue-50/40 flex items-start justify-between gap-4">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-bold text-blue-950 text-sm">3. Praxis-Bonus für IT-Projekte (+45 Pkt.)</h3>
+                                <span class="px-2 py-0.5 text-[10px] font-bold uppercase bg-blue-100 text-blue-800 rounded">Tipp</span>
+                            </div>
+                            <p class="text-xs text-slate-700 mt-1 leading-relaxed">
+                                Erkennt praktische Erfahrungen (z. B. eigene PCs bauen, Programmieren, Ehrenamt) auch ohne Firmen-Stempel an.
+                            </p>
+                        </div>
+                        <div class="relative inline-block w-11 mr-1 align-middle select-none shrink-0 mt-1">
+                            <input type="checkbox" id="rule-practice-bonus" onchange="updateSimulation()" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 border-slate-300 appearance-none cursor-pointer transition-all duration-200"/>
+                            <label for="rule-practice-bonus" class="toggle-label block overflow-hidden h-6 rounded-full bg-slate-300 cursor-pointer transition-colors duration-200"></label>
+                        </div>
+                    </div>
+
+                    <!-- Regel 4: Buzzword-Filter (Gegen ChatGPT-Floskeln) -->
+                    <div class="p-4 rounded-xl border-2 border-indigo-200 bg-indigo-50/40 flex items-start justify-between gap-4">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-bold text-indigo-950 text-sm">4. KI-Floskel-Abzug (-25 Pkt.)</h3>
+                                <span class="px-2 py-0.5 text-[10px] font-bold uppercase bg-indigo-100 text-indigo-800 rounded">Tipp</span>
+                            </div>
+                            <p class="text-xs text-slate-700 mt-1 leading-relaxed">
+                                Zieht Punkte ab, wenn ein Anschreiben viele abstrakte Modewörter enthält, aber kein einziges konkretes Praxisprojekt nennt.
+                            </p>
+                        </div>
+                        <div class="relative inline-block w-11 mr-1 align-middle select-none shrink-0 mt-1">
+                            <input type="checkbox" id="rule-buzzword-penalty" onchange="updateSimulation()" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 border-slate-300 appearance-none cursor-pointer transition-all duration-200"/>
+                            <label for="rule-buzzword-penalty" class="toggle-label block overflow-hidden h-6 rounded-full bg-slate-300 cursor-pointer transition-colors duration-200"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schwellenwert Schieberegler -->
+                <div class="mt-6 p-5 rounded-xl bg-slate-50 border border-slate-200">
+                    <div class="flex items-center justify-between mb-2">
+                        <label for="rule-threshold" class="text-sm font-bold text-slate-900">5. Einladungsgrenze (Ab wie viel Prozent wird eingeladen?)</label>
+                        <span id="threshold-display" class="px-3 py-1 rounded-lg bg-blue-600 text-white font-extrabold text-sm">60 %</span>
+                    </div>
+                    <input type="range" id="rule-threshold" min="30" max="90" step="5" value="60" oninput="updateSimulation()" class="w-full mt-2">
+                    <div class="flex justify-between text-xs text-slate-400 mt-1">
+                        <span>30 % (Sehr locker)</span>
+                        <span>60 % (Standard)</span>
+                        <span>90 % (Extrem streng)</span>
+                    </div>
+                </div>
+
+                <!-- Live-Vorschau der neuen Rangliste -->
+                <div class="mt-6 pt-5 border-t border-slate-200">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Live-Auswirkung auf die 3 Bewerbungen:</h3>
+                    <div id="live-preview-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Wird dynamisch befüllt -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- TAB 3: EIGENE BEWERBUNG TESTEN (BERUFS-QUIZ & ATS-CHECK)  -->
+        <!-- ========================================================= -->
+        <section id="view-sandbox" class="hidden space-y-6">
+            <!-- Datenschutz-Hinweis Banner -->
+            <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                    </div>
+                    <p class="text-xs sm:text-sm text-emerald-950 font-medium">
+                        <strong>Datenschutz-Modus aktiv:</strong> Gib bitte <strong>KEINEN echten Namen, keine Adresse und keine Schule</strong> ein – alle Eingaben bleiben anonym im Browser.
+                    </p>
+                </div>
+                <span class="hidden sm:inline-flex px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-200/70 text-emerald-900 shrink-0">100 % Anonym</span>
+            </div>
+
+            <!-- SCHRITT 1: INTERAKTIVES BERUFS-QUIZ (3 KLICKS) -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4 mb-6">
+                    <div>
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-blue-50 text-blue-700 border border-blue-200">Schritt 1 • Interessen-Check</span>
+                        <h2 class="text-xl font-bold text-slate-900 mt-2">Welche Ausbildung passt zu dir? (3 schnelle Klicks)</h2>
+                    </div>
+                    <span class="text-xs text-slate-500 font-medium">Realschule Bayern • Region Freising &amp; München</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Frage 1: Wahlpflichtfächergruppe / Sparte -->
+                    <div class="space-y-2.5">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500">1. Deine Richtung / Lieblingsfächer</label>
+                        <div id="quiz-q1" class="space-y-2">
+                            <button type="button" onclick="selectQuizOption('track', 'tech')" data-val="tech" class="quiz-btn-track w-full text-left p-3 rounded-xl border-2 border-blue-600 bg-blue-50/70 text-slate-900 text-sm font-semibold transition">
+                                💻 Technik, IT &amp; Naturwissenschaften (WPFG I)
+                            </button>
+                            <button type="button" onclick="selectQuizOption('track', 'econ')" data-val="econ" class="quiz-btn-track w-full text-left p-3 rounded-xl border border-slate-200 hover:border-blue-300 bg-white text-slate-700 text-sm font-medium transition">
+                                📊 Wirtschaft, Büro &amp; Finanzen (WPFG II)
+                            </button>
+                            <button type="button" onclick="selectQuizOption('track', 'media')" data-val="media" class="quiz-btn-track w-full text-left p-3 rounded-xl border border-slate-200 hover:border-blue-300 bg-white text-slate-700 text-sm font-medium transition">
+                                🎨 Gestaltung, Medien &amp; Kreatives (WPFG IIIb – Kunst)
+                            </button>
+                            <button type="button" onclick="selectQuizOption('track', 'craft')" data-val="craft" class="quiz-btn-track w-full text-left p-3 rounded-xl border border-slate-200 hover:border-blue-300 bg-white text-slate-700 text-sm font-medium transition">
+                                🔧 Handwerk, Gesundheit &amp; Praxis (WPFG IIIb – Soziales/Werken)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Frage 2: Arbeitsweise -->
+                    <div class="space-y-2.5">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500">2. Wie arbeitest du am liebsten?</label>
+                        <div id="quiz-q2" class="space-y-2">
+                            <button type="button" onclick="selectQuizOption('style', 'digital')" data-val="digital" class="quiz-btn-style w-full text-left p-3 rounded-xl border-2 border-blue-600 bg-blue-50/70 text-slate-900 text-sm font-semibold transition">
+                                🖥️ Am Computer tüfteln, Daten &amp; Programme verstehen
+                            </button>
+                            <button type="button" onclick="selectQuizOption('style', 'people')" data-val="people" class="quiz-btn-style w-full text-left p-3 rounded-xl border border-slate-200 hover:border-blue-300 bg-white text-slate-700 text-sm font-medium transition">
+                                🤝 Mit Menschen kommunizieren, organisieren &amp; beraten
+                            </button>
+                            <button type="button" onclick="selectQuizOption('style', 'hands')" data-val="hands" class="quiz-btn-style w-full text-left p-3 rounded-xl border border-slate-200 hover:border-blue-300 bg-white text-slate-700 text-sm font-medium transition">
+                                🛠️ Praktisch anpacken, Dinge bauen, gestalten oder reparieren
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Frage 3: Praxiserfahrung -->
+                    <div class="space-y-2.5">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500">3. Erste Praxiserfahrung?</label>
+                        <div id="quiz-q3" class="space-y-2">
+                            <button type="button" onclick="selectQuizOption('exp', 'yes')" data-val="yes" class="quiz-btn-exp w-full text-left p-3 rounded-xl border-2 border-blue-600 bg-blue-50/70 text-slate-900 text-sm font-semibold transition">
+                                ✅ Ja, durch ein Praktikum oder konkretes Hobby-Projekt
+                            </button>
+                            <button type="button" onclick="selectQuizOption('exp', 'no')" data-val="no" class="quiz-btn-exp w-full text-left p-3 rounded-xl border border-slate-200 hover:border-blue-300 bg-white text-slate-700 text-sm font-medium transition">
+                                🌱 Noch nicht direkt, aber ich bin motiviert und lerne schnell
+                            </button>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 mt-3">
+                            <strong>Hinweis:</strong> Frage 3 steuert automatisch, ob dein Bewerber-Profil im ATS-Scanner bereits einen Praxispunkt mitbringt.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SCHRITT 2: STELLENANZEIGE-STECKBRIEF (REGION FREISING / MÜNCHEN) -->
+            <div id="job-profile-card" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
+                <!-- Wird dynamisch je nach Quiz-Auswahl gerendert -->
+            </div>
+
+            <!-- SCHRITT 3: LIVE ATS-TEXT-TESTER FÜR DIESEN AUSBILDUNGSBERUF -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
+                <div class="max-w-3xl">
+                    <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200">Schritt 3 • Live ATS-Text-Scanner</span>
+                    <h2 class="text-xl font-bold text-slate-900 mt-2">Teste 2–3 Sätze für genau diese Ausbildungsstelle</h2>
+                    <p class="text-sm text-slate-600 mt-1">
+                        Schreibe anonym, warum du dich für diesen Beruf interessierst und welche Stärken oder Hobbys du mitbringst. Der Scanner prüft deinen Text gegen die Keywords aus dem Steckbrief oben!
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
+                    <!-- Eingabe -->
+                    <div class="lg:col-span-7 space-y-4">
+                        <div>
+                            <label for="custom-text" class="block text-sm font-semibold text-slate-700 mb-1.5">Dein anonymer Bewerbungs-Auszug (ohne Namen!):</label>
+                            <textarea id="custom-text" rows="5" oninput="analyzeCustomText()" placeholder="Schreibe hier 2–3 anonyme Sätze über deine Interessen, Lieblingsfächer oder Hobbys passend zum Beruf..." class="w-full rounded-xl border border-slate-300 p-4 text-sm text-slate-800 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none"></textarea>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="text-xs text-slate-500 font-medium mr-1">Starthilfe:</span>
+                            <button type="button" onclick="fillJobExample('good')" class="text-xs px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-semibold transition">
+                                ✨ Authentisches Beispiel einfügen
+                            </button>
+                            <button type="button" onclick="fillJobExample('buzz')" class="text-xs px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 font-semibold transition">
+                                🤖 ChatGPT-Floskel-Beispiel einfügen
+                            </button>
+                            <button type="button" onclick="clearCustomText()" class="text-xs px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition">
+                                Text zurücksetzen
+                            </button>
+                        </div>
+
+                        <!-- Option 1: 1-Klick-ChatGPT-Generator & Aha-Effekt -->
+                        <div class="pt-3 border-t border-slate-100">
+                            <button type="button" onclick="triggerChatGptAhaEffect()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold shadow-sm transition flex items-center justify-center gap-2">
+                                <span>🤖 Jetzt diesen Text von „ChatGPT“ neu schreiben lassen</span>
+                            </button>
+                        </div>
+
+                        <!-- Aha-Effekt Ergebnis-Box (erscheint nach Klick) -->
+                        <div id="chatgpt-aha-box" class="hidden space-y-3 p-4 sm:p-5 rounded-2xl bg-slate-900 text-slate-100 border border-slate-700 shadow-md">
+                            <div class="flex items-center justify-between border-b border-slate-700 pb-2.5">
+                                <span class="text-xs font-bold uppercase tracking-wider text-indigo-300">🤖 Ergebnis der KI-Umschreibung</span>
+                                <button type="button" onclick="document.getElementById('chatgpt-aha-box').classList.add('hidden')" class="text-xs text-slate-400 hover:text-white">✕ Schließen</button>
+                            </div>
+
+                            <!-- 1. Übersetzter KI-Text -->
+                            <div>
+                                <p class="text-xs text-slate-400 mb-1">So macht eine KI deinen Text völlig austauschbar (wie bei Julian):</p>
+                                <div id="chatgpt-generated-output" class="p-3 rounded-xl bg-slate-800 border border-slate-700 text-xs sm:text-sm italic text-indigo-100 leading-relaxed"></div>
+                            </div>
+
+                            <!-- 2. Ausbilder-Frage im Vorstellungsgespräch -->
+                            <div class="p-3.5 rounded-xl bg-amber-950/60 border border-amber-500/40 text-xs sm:text-sm text-amber-100">
+                                <p class="font-bold text-amber-300 mb-1">🎤 Stell dir vor, der Chef fragt im Vorstellungsgespräch:</p>
+                                <p id="chatgpt-interview-question" class="leading-relaxed"></p>
+                            </div>
+
+                            <!-- 3. Datenschutz-Warnung -->
+                            <div class="p-3.5 rounded-xl bg-rose-950/70 border border-rose-500/50 text-xs sm:text-sm text-rose-100">
+                                <p class="font-bold text-rose-300 mb-1">🔒 Datenschutz-Check: Was wäre gerade passiert?</p>
+                                <p class="leading-relaxed">
+                                    Hättest du jetzt deinen <strong>echten Namen, deine Adresse, deine Schule oder dein Zeugnis</strong> in einen KI-Chatbot kopiert, lägen diese persönlichen Daten jetzt auf fremden Servern im Ausland! <br>
+                                    <span class="text-emerald-300 font-semibold">Merke:</span> Nutze KI nur für Rechtschreib-Checks – und niemals mit privaten Daten!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live-Auswertung -->
+                    <div class="lg:col-span-5 bg-slate-50 rounded-2xl border border-slate-200 p-5 flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="flex items-center justify-between gap-2">
+                                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">ATS-Auswertung</h3>
+                                <span id="custom-style-badge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-200 text-slate-700">Noch leer</span>
+                            </div>
+
+                            <div class="mt-3 flex items-baseline justify-between">
+                                <span class="text-sm font-medium text-slate-600">Match-Score:</span>
+                                <span id="custom-score" class="text-3xl font-extrabold text-blue-700">0 %</span>
+                            </div>
+                            <div class="w-full bg-slate-200 h-2.5 rounded-full mt-2 overflow-hidden">
+                                <div id="custom-bar" class="bg-blue-600 h-full transition-all duration-300" style="width: 0%"></div>
+                            </div>
+
+                            <div id="custom-verdict" class="mt-3 p-3 rounded-xl text-xs sm:text-sm font-semibold bg-slate-200/70 text-slate-700">
+                                Gib oben einen kurzen Text ein oder nutze ein Beispiel.
+                            </div>
+
+                            <!-- Erkannte Keywords -->
+                            <div class="mt-4 space-y-2">
+                                <p class="text-xs font-bold text-slate-500 uppercase">Erkannte Begriffe im Text:</p>
+                                <div id="custom-keywords-list" class="flex flex-wrap gap-1.5">
+                                    <span class="text-xs text-slate-400 italic">Noch keine Keywords erkannt...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Konkreter Praxis-Tipp für den gewählten Betrieb -->
+                        <div id="custom-coach-tip" class="p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-950 leading-relaxed">
+                            <!-- Wird dynamisch befüllt -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 mt-8">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-2">
+            <span>BavariaTech GmbH • Simulation für den Unterricht im Fach Wirtschaft und Recht (Klasse 9)</span>
+            <span>RecruitBot 3.0 Educational Edition</span>
+        </div>
+    </footer>
+
+    <script>
+        // ==========================================
+        // DATEN DER 3 BEWERBER (Exakt wie auf dem AB)
+        // ==========================================
+        const candidates = [
+            {
+                id: 'julian',
+                name: 'Julian',
+                age: 16,
+                avatarColor: 'bg-indigo-100 text-indigo-700',
+                avgGrade: '1,9',
+                grades: { mathe: 2, it: 1, deutsch: 2, englisch: 2 },
+                gradesPass: true,
+                hasCertificate: true,
+                certificateText: 'Schulpraktikum in einer Werbeagentur vorhanden',
+                hobbyText: 'Hobbys: keine genannt',
+                hasPracticalProjects: false,
+                isBuzzwordHeavy: true,
+                keywordPoints: 45,
+                detectedKeywords: ['Innovationsgeist', 'agile Softwareentwicklungsprozesse', 'synergetisch', 'Tech-Stack', 'objektorientierte Architekturen', 'par excellence'],
+                projectKeywords: [],
+                rawText: 'Mit proaktivem Innovationsgeist strebe ich danach, agile Softwareentwicklungsprozesse synergetisch in Ihrem Tech-Stack zu optimieren. Ich beherrsche objektorientierte Architekturen par excellence.'
+            },
+            {
+                id: 'denis',
+                name: 'Denis',
+                age: 16,
+                avatarColor: 'bg-sky-100 text-sky-700',
+                avgGrade: '2,5',
+                grades: { mathe: 2, it: 2, deutsch: 3, englisch: 3 },
+                gradesPass: true,
+                hasCertificate: true,
+                certificateText: 'Praktikumszeugnis Elektronikmarkt („stets zuverlässig und pünktlich“)',
+                hobbyText: 'Hobbys: Gaming, Video-Schnitt',
+                hasPracticalProjects: false,
+                isBuzzwordHeavy: false,
+                keywordPoints: 25,
+                detectedKeywords: ['Computer', 'Netzwerken', 'IT', 'hilfsbereit', 'pünktlich'],
+                projectKeywords: [],
+                rawText: 'Ich bewerbe mich, weil mich Computer schon lange interessieren. An der Realschule habe ich solide Grundlagen in Netzwerken und IT gelernt. Ich bin hilfsbereit, pünktlich und lerne schnell dazu.'
+            },
+            {
+                id: 'mia',
+                name: 'Mia',
+                age: 15,
+                avatarColor: 'bg-emerald-100 text-emerald-700',
+                avgGrade: '2,4',
+                grades: { mathe: 2, it: 1, deutsch: 3, englisch: 2 },
+                gradesPass: true,
+                hasCertificate: false,
+                certificateText: 'Kein Betriebspraktikum (nutzte die Ferien zum Tüfteln zuhause)',
+                hobbyText: 'Ehrenamt / Freizeit: PC-Bau, Python-Tutorials, IT-Support Jugendzentrum',
+                hasPracticalProjects: true,
+                isBuzzwordHeavy: false,
+                keywordPoints: 35,
+                detectedKeywords: ['Mathe', 'IT', 'englische Anleitungen', 'Python'],
+                projectKeywords: ['PCs selbst zusammengebaut', 'Fehler behoben', 'Programme in Python zu schreiben'],
+                rawText: 'In Mathe und IT habe ich gute Noten und verstehe englische Anleitungen problemlos. Ich habe schon mehrere PCs selbst zusammengebaut, Fehler behoben und mir mit Online-Tutorials beigebracht, kleine Programme in Python zu schreiben.'
+            }
+        ];
+
+        let selectedCandidateId = 'julian';
+        let taskBannerOpen = true;
+
+        function toggleTaskBanner() {
+            taskBannerOpen = !taskBannerOpen;
+            const body = document.getElementById('task-banner-body');
+            const text = document.getElementById('task-banner-toggle-text').querySelector('span');
+            const icon = document.getElementById('task-banner-icon');
+            if (taskBannerOpen) {
+                body.classList.remove('hidden');
+                text.textContent = 'Einklappen';
+                icon.classList.remove('rotate-180');
+            } else {
+                body.classList.add('hidden');
+                text.textContent = 'Aufgaben anzeigen';
+                icon.classList.add('rotate-180');
+            }
+        }
+
+        // ==========================================
+        // SCORE-BERECHNUNG NACH AKTUELLEN REGELN
+        // ==========================================
+        function evaluateCandidate(candidate) {
+            const ruleGrades = document.getElementById('rule-grades').checked;
+            const ruleCertificate = document.getElementById('rule-certificate').checked;
+            const rulePracticeBonus = document.getElementById('rule-practice-bonus').checked;
+            const ruleBuzzwordPenalty = document.getElementById('rule-buzzword-penalty').checked;
+            const threshold = parseInt(document.getElementById('rule-threshold').value, 10);
+
+            // 1. K.-o.-Check Kernfächer
+            const passedGrades = !ruleGrades || candidate.gradesPass;
+
+            // 2. Nachweis-Punkte
+            let proofPoints = 0;
+            let proofReason = '';
+
+            if (ruleCertificate && candidate.hasCertificate) {
+                proofPoints = 50;
+                proofReason = 'Offizielles Praktikumszeugnis anerkannt (+50 Pkt.)';
+            } else if (rulePracticeBonus && candidate.hasPracticalProjects) {
+                proofPoints = 45;
+                proofReason = 'Praxis-Bonus für IT-Projekte & Ehrenamt (+45 Pkt.)';
+            } else if (!ruleCertificate) {
+                proofPoints = 30;
+                proofReason = 'Praktikums-Pflicht deaktiviert (Basis-Pauschale +30 Pkt.)';
+            } else {
+                proofPoints = 0;
+                proofReason = 'Kein Betriebspraktikum vorhanden (0 Pkt.)';
+            }
+
+            // 3. Keyword-Punkte & Buzzword-Malus
+            let kwPoints = candidate.keywordPoints;
+            let penaltyApplied = false;
+            if (ruleBuzzwordPenalty && candidate.isBuzzwordHeavy) {
+                kwPoints = Math.max(0, kwPoints - 25);
+                penaltyApplied = true;
+            }
+
+            // Gesamt-Score
+            const totalScore = passedGrades ? Math.min(100, proofPoints + kwPoints) : 0;
+            const invited = passedGrades && totalScore >= threshold;
+
+            return {
+                passedGrades,
+                proofPoints,
+                proofReason,
+                kwPoints,
+                penaltyApplied,
+                totalScore,
+                invited,
+                threshold
+            };
+        }
+
+        // ==========================================
+        // TEXT MIT HIGHLIGHTED KEYWORDS RENDERN
+        // ==========================================
+        function formatHighlightedText(candidate) {
+            let text = candidate.rawText;
+            const rulePracticeBonus = document.getElementById('rule-practice-bonus').checked;
+
+            candidate.projectKeywords.forEach(phrase => {
+                const badgeClass = rulePracticeBonus ? 'kw-project' : 'underline decoration-dashed decoration-slate-400';
+                text = text.replace(phrase, `<span class="${badgeClass}" title="${rulePracticeBonus ? 'Als Praxis-Projekt erkannt!' : 'Wird aktuell nicht als Nachweis gewertet'}">${phrase}</span>`);
+            });
+
+            candidate.detectedKeywords.forEach(kw => {
+                if (!text.includes(`>${kw}<`)) {
+                    text = text.replace(kw, `<span class="kw-hit" title="Schlagwort-Treffer (+Punkte)">${kw}</span>`);
+                }
+            });
+
+            return text;
+        }
+
+        // ==========================================
+        // UI RENDERING: INBOX LISTE & DETAILANSICHT
+        // ==========================================
+        function renderInbox() {
+            const listContainer = document.getElementById('candidate-list');
+            listContainer.innerHTML = '';
+
+            // Sortiere Liste live nach aktuellem Score absteigend
+            const sortedCandidates = [...candidates].sort((a, b) => {
+                return evaluateCandidate(b).totalScore - evaluateCandidate(a).totalScore;
+            });
+
+            sortedCandidates.forEach((cand, index) => {
+                const evalRes = evaluateCandidate(cand);
+                const isSelected = cand.id === selectedCandidateId;
+
+                const statusBadge = evalRes.invited
+                    ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
+                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Einladung
+                       </span>`
+                    : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800">
+                         <span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span> Absage
+                       </span>`;
+
+                const card = document.createElement('button');
+                card.type = 'button';
+                card.onclick = () => {
+                    selectedCandidateId = cand.id;
+                    renderInbox();
+                };
+                card.className = `w-full text-left p-4 rounded-2xl border transition-all ${
+                    isSelected
+                        ? 'bg-white border-blue-600 ring-2 ring-blue-600/20 shadow-md'
+                        : 'bg-white border-slate-200 hover:border-blue-300 shadow-sm'
+                }`;
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <div class="relative w-11 h-11 rounded-full ${cand.avatarColor} font-bold text-base flex items-center justify-center shrink-0">
+                                ${cand.name.charAt(0)}
+                                <span class="absolute -top-1 -left-1 w-5 h-5 rounded-full bg-slate-800 text-white text-[10px] font-bold flex items-center justify-center border border-white">#${index + 1}</span>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="font-bold text-slate-900 text-base">${cand.name} (${cand.age})</span>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-0.5">Notenschnitt: <strong class="text-slate-700">${cand.avgGrade}</strong> • IT: ${cand.grades.it}</p>
+                            </div>
+                        </div>
+                        <div class="text-right shrink-0">
+                            <div class="text-lg font-extrabold ${evalRes.invited ? 'text-emerald-700' : 'text-rose-700'}">
+                                ${evalRes.totalScore} %
+                            </div>
+                            <div class="mt-0.5">${statusBadge}</div>
+                        </div>
+                    </div>
+                `;
+                listContainer.appendChild(card);
+            });
+
+            renderDetailPanel();
+        }
+
+        function renderDetailPanel() {
+            const cand = candidates.find(c => c.id === selectedCandidateId);
+            const evalRes = evaluateCandidate(cand);
+            const detailContainer = document.getElementById('candidate-detail');
+
+            const bannerHtml = evalRes.invited
+                ? `<div class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between">
+                     <div class="flex items-center gap-2.5 text-emerald-900 text-sm font-semibold">
+                        <svg class="w-5 h-5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Empfehlung: Zum Vorstellungsgespräch einladen</span>
+                     </div>
+                     <span class="text-xs font-bold text-emerald-700">Ziel: &ge; ${evalRes.threshold} %</span>
+                   </div>`
+                : `<div class="p-3.5 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-between">
+                     <div class="flex items-center gap-2.5 text-rose-900 text-sm font-semibold">
+                        <svg class="w-5 h-5 text-rose-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Empfehlung: Automatische Absage senden</span>
+                     </div>
+                     <span class="text-xs font-bold text-rose-700">Unter ${evalRes.threshold} %</span>
+                   </div>`;
+
+            detailContainer.innerHTML = `
+                <!-- Kopfzeile Bewerber -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-14 h-14 rounded-2xl ${cand.avatarColor} font-extrabold text-xl flex items-center justify-center shrink-0">
+                            ${cand.name.charAt(0)}
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">${cand.name} (${cand.age} Jahre)</h2>
+                            <p class="text-sm text-slate-500">Bewerbung: Fachinformatiker/in • Schnitt: <strong class="text-slate-800">${cand.avgGrade}</strong></p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900 text-white px-4 py-2.5 rounded-xl text-center shrink-0">
+                        <div class="text-xs text-slate-300 uppercase font-semibold tracking-wider">ATS-Score</div>
+                        <div class="text-2xl font-extrabold">${evalRes.totalScore} %</div>
+                    </div>
+                </div>
+
+                <!-- Status-Banner -->
+                <div class="mt-5">
+                    ${bannerHtml}
+                </div>
+
+                <!-- Zeugnisnoten & Nachweise -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5">
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                        <span class="text-xs font-bold uppercase text-slate-400">Zeugnisnoten</span>
+                        <div class="grid grid-cols-4 gap-2 mt-2 text-center">
+                            <div class="bg-white p-2 rounded-lg border border-slate-200">
+                                <div class="text-xs text-slate-500">Mathe</div>
+                                <div class="font-bold text-slate-900">${cand.grades.mathe}</div>
+                            </div>
+                            <div class="bg-white p-2 rounded-lg border border-slate-200">
+                                <div class="text-xs text-slate-500">IT</div>
+                                <div class="font-bold text-blue-700">${cand.grades.it}</div>
+                            </div>
+                            <div class="bg-white p-2 rounded-lg border border-slate-200">
+                                <div class="text-xs text-slate-500">Deutsch</div>
+                                <div class="font-bold text-slate-900">${cand.grades.deutsch}</div>
+                            </div>
+                            <div class="bg-white p-2 rounded-lg border border-slate-200">
+                                <div class="text-xs text-slate-500">Englisch</div>
+                                <div class="font-bold text-slate-900">${cand.grades.englisch}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-2">
+                        <div>
+                            <span class="text-xs font-bold uppercase text-slate-400">Nachweise & Aktivitäten</span>
+                            <p class="text-xs sm:text-sm font-medium text-slate-800 mt-1">
+                                ${cand.hasCertificate ? '📄 ' : '❌ '} ${cand.certificateText}
+                            </p>
+                        </div>
+                        <p class="text-xs text-slate-600 border-t border-slate-200 pt-1.5">
+                            ⭐ ${cand.hobbyText}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Anschreiben mit Keyword-Scan -->
+                <div class="mt-6">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                        <h3 class="text-sm font-bold text-slate-900">Anschreiben (Automatischer Text-Scan)</h3>
+                        <div class="flex items-center gap-3 text-xs">
+                            <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-emerald-200 border border-emerald-500"></span> Schlagwort</span>
+                            <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-blue-200 border border-blue-500"></span> IT-Praxis</span>
+                        </div>
+                    </div>
+                    <div class="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200 text-sm sm:text-base leading-relaxed text-slate-800 italic">
+                        „${formatHighlightedText(cand)}“
+                    </div>
+                </div>
+
+                <!-- Schritt-für-Schritt Rechnung der Software -->
+                <div class="mt-6 pt-5 border-t border-slate-200">
+                    <h3 class="text-sm font-bold text-slate-900 mb-3">Wie hat RecruitBot 3.0 gerechnet?</h3>
+                    <div class="space-y-2.5 text-sm">
+                        <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
+                            <span><strong>Schritt 1:</strong> Kernfächer-Check (Mathe, Deutsch, Englisch &le; 3)</span>
+                            <span class="font-bold text-emerald-700">Bestanden &check;</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
+                            <span><strong>Schritt 2:</strong> ${evalRes.proofReason}</span>
+                            <span class="font-bold ${evalRes.proofPoints > 0 ? 'text-blue-700' : 'text-rose-600'}">+${evalRes.proofPoints} Pkt.</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
+                            <span>
+                                <strong>Schritt 3:</strong> Schlagwort- & Sprach-Check (${cand.detectedKeywords.length} Treffer)
+                                ${evalRes.penaltyApplied ? '<span class="block text-xs text-amber-700 font-semibold">Abzug: -25 Pkt. wegen abstrakter Buzzwords ohne Praxisbeleg</span>' : ''}
+                            </span>
+                            <span class="font-bold text-blue-700">+${evalRes.kwPoints} Pkt.</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // LIVE PREVIEW IM EINSTELLUNGS-TAB
+        // ==========================================
+        function renderLivePreview() {
+            const container = document.getElementById('live-preview-grid');
+            container.innerHTML = '';
+
+            const sorted = [...candidates].sort((a, b) => {
+                return evaluateCandidate(b).totalScore - evaluateCandidate(a).totalScore;
+            });
+
+            sorted.forEach((cand, idx) => {
+                const res = evaluateCandidate(cand);
+                const card = document.createElement('div');
+                card.className = `p-4 rounded-xl border ${res.invited ? 'bg-emerald-50/70 border-emerald-200' : 'bg-rose-50/70 border-rose-200'}`;
+                card.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-slate-900">Platz ${idx + 1}: ${cand.name} (${cand.age})</span>
+                        <span class="font-extrabold text-lg ${res.invited ? 'text-emerald-700' : 'text-rose-700'}">${res.totalScore} %</span>
+                    </div>
+                    <div class="mt-2 text-xs font-semibold ${res.invited ? 'text-emerald-800' : 'text-rose-800'}">
+                        ${res.invited ? '✓ Wird zum Gespräch eingeladen' : '✕ Automatische Absage'}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // ==========================================
+        // SIMULATION AKTUALISIEREN & TABS WECHSELN
+        // ==========================================
+        function updateSimulation() {
+            const threshold = document.getElementById('rule-threshold').value;
+            document.getElementById('threshold-display').textContent = `${threshold} %`;
+
+            const ruleCert = document.getElementById('rule-certificate').checked;
+            const ruleBonus = document.getElementById('rule-practice-bonus').checked;
+            const ruleBuzz = document.getElementById('rule-buzzword-penalty').checked;
+
+            const statusText = document.getElementById('status-summary-text');
+            let activeMods = [];
+            if (ruleBonus) activeMods.push('Praxis-Bonus aktiv (+45 Pkt.)');
+            if (ruleBuzz) activeMods.push('Buzzword-Filter aktiv (-25 Pkt.)');
+            if (!ruleCert) activeMods.push('Praktikums-Pflicht aus');
+
+            if (activeMods.length > 0) {
+                statusText.textContent = `${activeMods.join(' • ')} • Einladung ab ${threshold} %.`;
+            } else {
+                statusText.textContent = `Standard-Einstellung der Firma (Einladung ab ${threshold} % Score).`;
+            }
+
+            renderInbox();
+            renderLivePreview();
+        }
+
+        function resetRules() {
+            document.getElementById('rule-grades').checked = true;
+            document.getElementById('rule-certificate').checked = true;
+            document.getElementById('rule-practice-bonus').checked = false;
+            document.getElementById('rule-buzzword-penalty').checked = false;
+            document.getElementById('rule-threshold').value = 60;
+            updateSimulation();
+        }
+
+        function switchTab(tabName) {
+            const tabs = ['inbox', 'settings', 'sandbox'];
+            tabs.forEach(t => {
+                const view = document.getElementById(`view-${t}`);
+                const btn = document.getElementById(`tab-btn-${t}`);
+                if (t === tabName) {
+                    view.classList.remove('hidden');
+                    btn.classList.add('bg-white', 'text-blue-700', 'shadow-sm');
+                    btn.classList.remove('text-slate-600');
+                } else {
+                    view.classList.add('hidden');
+                    btn.classList.remove('bg-white', 'text-blue-700', 'shadow-sm');
+                    btn.classList.add('text-slate-600');
+                }
+            });
+        }
+
+        // ==========================================
+        // SANDBOX: EIGENEN TEXT ANALYSIEREN
+        // ==========================================
+        // SANDBOX: EIGENEN TEXT ANALYSIEREN (ANONYM)
+        // ==========================================
+        // SANDBOX: BERUFS-QUIZ & JOB-SPEZIFISCHER ATS-TESTER
+        // ==========================================
+        const quizState = {
+            track: 'tech',
+            style: 'digital',
+            exp: 'yes'
+        };
+
+        const careerProfiles = {
+            tech: {
+                badge: 'WPFG I • Technik, IT & Naturwissenschaften',
+                title: 'Fachinformatiker/in oder Mechatroniker/in (m/w/d)',
+                employers: 'Flughafen München GmbH, Texas Instruments (Freising), Rohde & Schwarz (München), BMW Group',
+                location: 'Freising / Flughafen / Großraum München',
+                salary: 'ca. 1.120 € – 1.280 € (1. Lehrjahr)',
+                subjects: 'Mathematik, IT, Physik, Englisch',
+                skills: 'Logisches Denken, Sorgfalt, Interesse an Hard- & Software, Teamarbeit',
+                keywords: ['mathe', 'it', 'computer', 'python', 'programmieren', 'netzwerk', 'netzwerke', 'technik', 'physik', 'pc', 'software', 'hardware', 'elektronik', 'logisch', 'löten', 'projekt', 'projekte', 'praktikum'],
+                goodExample: 'In Mathe und IT habe ich gute Noten und verstehe englische Anleitungen problemlos. In meiner Freizeit baue ich PCs zusammen, programmiere kleine Projekte in Python und tüftle gerne an Technik.',
+                buzzExample: 'Mit proaktivem Innovationsgeist optimiere ich agile Software-Projekte synergetisch in Ihrem Tech-Stack und beherrsche komplexe Architekturen par excellence.',
+                coachTip: 'Betriebe wie Texas Instruments in Freising oder der Flughafen München achten besonders auf konkrete Beispiele (z. B. eigene kleine Programme, Schaltungen oder IT-Wahlfach) statt leerer Fremdwörter.'
+            },
+            econ: {
+                badge: 'WPFG II • Wirtschaft, Büro & Finanzen',
+                title: 'Industriekaufmann/-frau oder Bankkaufmann/-frau (m/w/d)',
+                employers: 'Molkerei Weihenstephan (Freising), Sparkasse Freising Moosburg, Flughafen München GmbH, Allianz (München)',
+                location: 'Freising / Moosburg / München',
+                salary: 'ca. 1.100 € – 1.250 € (1. Lehrjahr)',
+                subjects: 'Betriebswirtschaftslehre/Rechnungswesen (BwR), Mathematik, Deutsch, Wirtschaft und Recht',
+                skills: 'Organisationstalent, Freundlichkeit, Zahlenverständnis, Zuverlässigkeit',
+                keywords: ['bwr', 'wirtschaft', 'mathe', 'zahlen', 'organisieren', 'organisation', 'büro', 'kunden', 'beratung', 'beraten', 'excel', 'tabellen', 'zuverlässig', 'team', 'kommunikation', 'klassensprecher', 'verein', 'praktikum'],
+                goodExample: 'Mir machen BwR und Wirtschaft und Recht großen Spaß, weil ich gerne mit Zahlen arbeite und Dinge organisiere. Im Sportverein helfe ich bei der Kassenführung und bin zuverlässig im Umgang mit Menschen.',
+                buzzExample: 'Als dynamischer Teamplayer strebe ich danach, betriebswirtschaftliche Wertschöpfungsketten synergetisch und kundenorientiert par excellence zu skalieren.',
+                coachTip: 'Bei Arbeitgebern wie der Sparkasse Freising Moosburg oder Weihenstephan punktest du mit Zuverlässigkeit, guten Noten in BwR/Deutsch und Aufgaben wie Klassensprecher oder Vereinsorganisation.'
+            },
+            media: {
+                badge: 'WPFG IIIb • Gestaltung, Medien & Kreatives',
+                title: 'Mediengestalter/in Digital und Print oder Techn. Produktdesigner/in (m/w/d)',
+                employers: 'Freisinger Tagblatt / Medienhäuser, Kreativagenturen in München, Verlage & Druckereien im Landkreis Freising',
+                location: 'Freising / München',
+                salary: 'ca. 1.020 € – 1.160 € (1. Lehrjahr)',
+                subjects: 'Kunst, Werken, Deutsch, IT / Mediengestaltung',
+                skills: 'Kreativität, Blick für Farben & Layout, Sorgfalt, Umgang mit Grafikprogrammen',
+                keywords: ['kunst', 'gestalten', 'gestaltung', 'design', 'kreativ', 'medien', 'grafik', 'layout', 'fotos', 'fotografie', 'video', 'videoschnitt', 'zeichnen', 'zeichnungen', 'plakat', 'schülerzeitung', 'programm', 'praktikum'],
+                goodExample: 'In Kunst und IT gestalte ich am liebsten Layouts und bearbeite Fotos sowie Videos. Für unser Schulfest habe ich bereits Plakate entworfen und arbeite sehr sorgfältig am Computer.',
+                buzzExample: 'Mit visuellem Innovationsgeist realisiere ich crossmediale Design-Konzepte synergetisch und auf höchstem ästhetischem Niveau par excellence.',
+                coachTip: 'Medienbetriebe in München und Freising schauen weniger auf schlaue Sätze, sondern darauf, ob du eigene Arbeitsproben (Zeichnungen, Plakate, Videoschnitt) beschreiben oder später zeigen kannst.'
+            },
+            craft: {
+                badge: 'WPFG IIIb • Handwerk, Gesundheit & Praxis',
+                title: 'Elektroniker/in, Kfz-Mechatroniker/in oder Medizinische/r Fachangestellte/r (m/w/d)',
+                employers: 'Klinikum Freising, Handwerks- & Kfz-Betriebe im Landkreis Freising, Stadtwerke Freising, MVG München',
+                location: 'Freising / Neufahrn / München-Nord',
+                salary: 'ca. 1.050 € – 1.230 € (1. Lehrjahr)',
+                subjects: 'Werken / Haushalt und Ernährung, Biologie, Mathematik, Deutsch',
+                skills: 'Handwerkliches Geschick, Hilfsbereitschaft, Verantwortungsbewusstsein, Anpacken können',
+                keywords: ['handwerk', 'bauen', 'reparieren', 'werkstatt', 'fahrrad', 'moped', 'technik', 'menschen', 'helfen', 'hilfsbereit', 'pflege', 'gesundheit', 'biologie', 'ehrenamt', 'feuerwehr', 'sanitäter', 'praktikum', 'zuverlässig'],
+                goodExample: 'Ich packe gerne praktisch an und repariere in meiner Freizeit mein Fahrrad und Moped selbst. Außerdem engagiere ich mich beim Schulsanitätsdienst und arbeite gerne im Team.',
+                buzzExample: 'Mit proaktiver Umsetzungskompetenz optimiere ich handwerkliche und soziale Serviceprozesse synergetisch und lösungsorientiert par excellence.',
+                coachTip: 'Ob Handwerksbetrieb im Landkreis Freising oder Klinikum Freising: Konkrete Praxis wie Jugendfeuerwehr, Schulsanitätsdienst, Babysitten oder Schrauben in der Werkstatt zählt hier doppelt!'
+            }
+        };
+
+        const genericBuzzwords = [
+            'innovationsgeist', 'synergetisch', 'par excellence', 'tech-stack',
+            'proaktiv', 'agile', 'architekturen', 'wertschöpfungsketten', 'skalieren',
+            'crossmediale', 'umsetzungskompetenz', 'serviceprozesse'
+        ];
+
+        function selectQuizOption(category, value) {
+            quizState[category] = value;
+
+            const btnClass = category === 'track' ? '.quiz-btn-track' : (category === 'style' ? '.quiz-btn-style' : '.quiz-btn-exp');
+            document.querySelectorAll(btnClass).forEach(btn => {
+                if (btn.dataset.val === value) {
+                    btn.className = `${btnClass.slice(1)} w-full text-left p-3 rounded-xl border-2 border-blue-600 bg-blue-50/70 text-slate-900 text-sm font-semibold transition`;
+                } else {
+                    btn.className = `${btnClass.slice(1)} w-full text-left p-3 rounded-xl border border-slate-200 hover:border-blue-300 bg-white text-slate-700 text-sm font-medium transition`;
+                }
+            });
+
+            renderJobProfileCard();
+            analyzeCustomText();
+        }
+
+        function getRecommendedProfile() {
+            // Hauptrichtung bestimmen (mit feiner Anpassung über Arbeitsweise)
+            if (quizState.track === 'tech') return careerProfiles.tech;
+            if (quizState.track === 'econ') return careerProfiles.econ;
+            if (quizState.track === 'media') return careerProfiles.media;
+            return careerProfiles.craft;
+        }
+
+        function renderJobProfileCard() {
+            const profile = getRecommendedProfile();
+            const container = document.getElementById('job-profile-card');
+
+            const styleNote = quizState.style === 'digital'
+                ? 'Fokus: Digitale Werkzeuge & Analyse'
+                : (quizState.style === 'people' ? 'Fokus: Teamarbeit & Kundenkontakt' : 'Fokus: Praktisches Arbeiten & Ergebnisse');
+
+            const expBadge = quizState.exp === 'yes'
+                ? '<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">✓ Praxiserfahrung vorhanden (+35 Pkt. Basis)</span>'
+                : '<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">🌱 Einsteiger ohne Praktikum (+15 Pkt. Basis)</span>';
+
+            container.innerHTML = `
+                <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 border-b border-slate-100 pb-5">
+                    <div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-blue-900 text-white">Schritt 2 • Dein Stellen-Steckbrief</span>
+                            <span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-100 text-slate-700">${profile.badge}</span>
+                            <span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-indigo-50 text-indigo-700">${styleNote}</span>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-3">${profile.title}</h2>
+                        <p class="text-sm text-slate-600 mt-1">
+                            <strong>Typische Ausbildungsbetriebe (Freising / München):</strong> ${profile.employers}
+                        </p>
+                    </div>
+                    <div class="shrink-0">
+                        ${expBadge}
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-5">
+                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                        <span class="text-xs font-bold uppercase text-slate-400">Ausbildungsort</span>
+                        <p class="text-sm font-semibold text-slate-800 mt-1">📍 ${profile.location}</p>
+                    </div>
+                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                        <span class="text-xs font-bold uppercase text-slate-400">Vergütung (ca.)</span>
+                        <p class="text-sm font-semibold text-slate-800 mt-1">💶 ${profile.salary}</p>
+                    </div>
+                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                        <span class="text-xs font-bold uppercase text-slate-400">Wichtigste Schulfächer</span>
+                        <p class="text-sm font-semibold text-slate-800 mt-1">📚 ${profile.subjects}</p>
+                    </div>
+                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                        <span class="text-xs font-bold uppercase text-slate-400">Gesuchte Stärken</span>
+                        <p class="text-sm font-semibold text-slate-800 mt-1">⭐ ${profile.skills}</p>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-3.5 rounded-xl bg-blue-50/60 border border-blue-100 flex flex-wrap items-center gap-2">
+                    <span class="text-xs font-bold text-blue-950 mr-1">Wonach der ATS-Filter bei diesem Beruf sucht:</span>
+                    ${profile.keywords.slice(0, 9).map(kw => `<span class="px-2 py-0.5 rounded-md bg-white border border-blue-200 text-blue-800 text-xs font-semibold">${kw}</span>`).join('')}
+                </div>
+            `;
+        }
+
+        function analyzeCustomText() {
+            const profile = getRecommendedProfile();
+            const text = document.getElementById('custom-text').value.toLowerCase();
+
+            const foundPractice = profile.keywords.filter(word => text.includes(word));
+            const foundBuzz = genericBuzzwords.filter(word => text.includes(word));
+
+            // Basis-Punkte aus Quiz-Frage 3 (Praxiserfahrung)
+            const basePoints = quizState.exp === 'yes' ? 35 : 15;
+            const practicePoints = Math.min(65, foundPractice.length * 13);
+            const buzzPoints = foundPractice.length === 0 ? Math.min(30, foundBuzz.length * 10) : 0;
+
+            const total = text.trim().length === 0 ? 0 : Math.min(100, basePoints + practicePoints + buzzPoints);
+
+            document.getElementById('custom-score').textContent = `${total} %`;
+            document.getElementById('custom-bar').style.width = `${total}%`;
+
+            const bar = document.getElementById('custom-bar');
+            const verdict = document.getElementById('custom-verdict');
+            const styleBadge = document.getElementById('custom-style-badge');
+
+            if (text.trim().length === 0) {
+                styleBadge.textContent = 'Noch leer';
+                styleBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-200 text-slate-700';
+                bar.className = 'bg-blue-600 h-full transition-all duration-300';
+                verdict.className = 'mt-3 p-3 rounded-xl text-xs sm:text-sm font-semibold bg-slate-200/70 text-slate-700';
+                verdict.textContent = 'Gib oben einen kurzen Text ein oder nutze ein Beispiel.';
+            } else if (foundBuzz.length >= 2 && foundPractice.length <= 1) {
+                styleBadge.textContent = 'Achtung: KI-Floskeln!';
+                styleBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-800';
+                bar.className = 'bg-amber-500 h-full transition-all duration-300';
+                verdict.className = 'mt-3 p-3 rounded-xl text-xs sm:text-sm font-semibold bg-amber-100 text-amber-900 border border-amber-200';
+                verdict.innerHTML = 'Der Computer erkennt zwar Fremdwörter, aber ein echter Ausbilder merkt sofort: Das klingt nach ChatGPT ohne echte Belege!';
+            } else if (total >= 60) {
+                styleBadge.textContent = 'Authentisch & Passend';
+                styleBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800';
+                bar.className = 'bg-emerald-600 h-full transition-all duration-300';
+                verdict.className = 'mt-3 p-3 rounded-xl text-xs sm:text-sm font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200';
+                verdict.innerHTML = 'Ab 60 % &rarr; Stark! Dein Text verbindet passende Keywords mit glaubwürdigen Beispielen.';
+            } else {
+                styleBadge.textContent = 'Ausbaufähig';
+                styleBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800';
+                bar.className = 'bg-rose-500 h-full transition-all duration-300';
+                verdict.className = 'mt-3 p-3 rounded-xl text-xs sm:text-sm font-semibold bg-rose-100 text-rose-800 border border-rose-200';
+                verdict.innerHTML = 'Unter 60 % &rarr; Nenne noch 1–2 konkrete Fächer, Hobbys oder Stärken aus dem Steckbrief oben!';
+            }
+
+            const kwContainer = document.getElementById('custom-keywords-list');
+            if (foundPractice.length === 0 && foundBuzz.length === 0) {
+                kwContainer.innerHTML = '<span class="text-xs text-slate-400 italic">Noch keine Keywords erkannt...</span>';
+            } else {
+                const practiceHtml = foundPractice.map(w =>
+                    `<span class="px-2 py-0.5 rounded-md text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">✓ Praxis: ${w}</span>`
+                );
+                const buzzHtml = foundBuzz.map(w =>
+                    `<span class="px-2 py-0.5 rounded-md text-xs font-semibold bg-rose-100 text-rose-800 border border-rose-300">⚠ Buzzword: ${w}</span>`
+                );
+                kwContainer.innerHTML = [...practiceHtml, ...buzzHtml].join('');
+            }
+
+            document.getElementById('custom-coach-tip').innerHTML = `<strong>Tipp für deine Bewerbung:</strong> ${profile.coachTip}`;
+        }
+
+        function fillJobExample(type) {
+            const profile = getRecommendedProfile();
+            const textarea = document.getElementById('custom-text');
+            textarea.value = type === 'good' ? profile.goodExample : profile.buzzExample;
+            analyzeCustomText();
+        }
+
+        function clearCustomText() {
+            document.getElementById('custom-text').value = '';
+            document.getElementById('chatgpt-aha-box').classList.add('hidden');
+            analyzeCustomText();
+        }
+
+        function triggerChatGptAhaEffect() {
+            const profile = getRecommendedProfile();
+            const textarea = document.getElementById('custom-text');
+            const ahaBox = document.getElementById('chatgpt-aha-box');
+            const outputEl = document.getElementById('chatgpt-generated-output');
+            const questionEl = document.getElementById('chatgpt-interview-question');
+
+            // Ersetze den Text mit dem gestelzten KI-Text und aktualisiere den Scanner
+            textarea.value = profile.buzzExample;
+            analyzeCustomText();
+
+            outputEl.textContent = `„${profile.buzzExample}“`;
+
+            const questionsByTrack = {
+                tech: '„In Ihrer Bewerbung steht, Sie optimieren agile Software-Projekte synergetisch in unserem Tech-Stack par excellence. Können Sie mir das mal an einem konkreten Beispiel erklären?“ – Würdest du da nicht sofort ins Stottern geraten?',
+                econ: '„Sie schreiben hier, Sie möchten betriebswirtschaftliche Wertschöpfungsketten synergetisch skalieren. Was genau stellen Sie sich darunter im 1. Ausbildungsjahr vor?“ – Merkst du, wie hohl das klingt?',
+                media: '„Sie behaupten, crossmediale Design-Konzepte synergetisch auf höchstem Niveau zu realisieren. Zeigen Sie uns doch mal, was Sie damit genau meinen!“ – Ohne eigene Arbeiten fliegt der KI-Text sofort auf.',
+                craft: '„Hier steht, Sie optimieren Serviceprozesse synergetisch mit proaktiver Umsetzungskompetenz. Was heißt das konkret für die Arbeit bei uns im Betrieb?“ – Im Gespräch zählt nur echtes Anpacken!'
+            };
+
+            questionEl.textContent = questionsByTrack[quizState.track] || questionsByTrack.tech;
+            ahaBox.classList.remove('hidden');
+            ahaBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Initialisierung beim Laden
+        window.onload = function() {
+            updateSimulation();
+            renderJobProfileCard();
+            analyzeCustomText();
+        };
+    </script>
+</body>
+</html>
